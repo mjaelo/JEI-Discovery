@@ -2,11 +2,19 @@ package com.jeidiscovery;
 
 import com.jeidiscovery.data.ItemGroup;
 import com.jeidiscovery.discovery.DiscoveryManager;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,6 +34,46 @@ public class ModEvents {
         String toDimension = event.getTo().location().getPath();
         LOGGER.info("Changed dimension to {}", toDimension);
         checkTrigger(ItemGroup.TriggerType.DIMENSION, toDimension);
+    }
+
+    @SubscribeEvent
+    public static void onItemPickup(EntityItemPickupEvent event) {
+        if (event.getEntity().level().isClientSide()) {
+            return; // Only run on the server side
+        }
+        ItemStack itemStack = event.getItem().getItem();
+        String itemId = itemStack.getItem().getDescriptionId().split("\\.")[2];
+        LOGGER.info("Item picked up: {}", itemId);
+        checkTrigger(ItemGroup.TriggerType.ITEM, itemId);
+    }
+
+    @SubscribeEvent
+    public static void onMobKilled(LivingDeathEvent event) {
+        if (event.getSource().getEntity() instanceof Player player) {
+            if (player.level().isClientSide()) {
+                return; // Only run on the server side
+            }
+            LivingEntity killedEntity = event.getEntity();
+            String mobId = EntityType.getKey(killedEntity.getType()).toString().split(":")[1];
+            LOGGER.info("Mob killed: {}", mobId);
+            checkTrigger(ItemGroup.TriggerType.MOB, mobId);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAdvancementEarned(AdvancementEvent event) {
+        if (event.getEntity().level().isClientSide()) {
+            return; // Only run on the server side
+        }
+        Advancement advancement = event.getAdvancement();
+        if (advancement == null) return;
+
+        ResourceLocation id = advancement.getId();
+        if (id == null) return;
+
+        String advancementId = id.toString();
+        LOGGER.info("Advancement earned: {}", advancementId);
+        checkTrigger(ItemGroup.TriggerType.ADVANCEMENT, advancementId);
     }
 
     @SubscribeEvent
