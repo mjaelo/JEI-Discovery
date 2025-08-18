@@ -11,6 +11,7 @@ public record ItemGroup(
 ) {
     public enum TriggerType {
         DIMENSION,
-        BIOME
+        BIOME,
+        EFFECT
     }
 }
