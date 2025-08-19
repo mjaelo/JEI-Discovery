@@ -1,6 +1,7 @@
 package com.jeidiscovery.discovery;
 
 import com.jeidiscovery.JEIPlugin;
+import com.jeidiscovery.ModEvents;
 import com.jeidiscovery.data.ItemGroup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -87,6 +88,7 @@ public class DiscoveryManager {
             LOGGER.info("Discovered new item group: {}", groupName);
             config.saveConfig();
             JEIPlugin.showItems(getItemsForGroup(groupName));
+            ModEvents.sendDiscoveryMessage(groupName);
         }
     }
 

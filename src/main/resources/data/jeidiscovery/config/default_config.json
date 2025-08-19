@@ -12,7 +12,7 @@
       "name": "End",
       "triggerType": "DIMENSION",
       "triggerValue": "the_end",
-      "keywords": ["ender", "chorus", "shulker", "end_", "elytra", "dragon"],
+      "keywords": ["ender", "chorus", "shulker", "end_", "elytra", "dragon","purpur"],
       "namespaces": []
     },
     {

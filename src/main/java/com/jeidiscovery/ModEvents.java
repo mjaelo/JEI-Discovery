@@ -2,8 +2,12 @@ package com.jeidiscovery;
 
 import com.jeidiscovery.data.ItemGroup;
 import com.jeidiscovery.discovery.DiscoveryManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,6 +31,20 @@ import java.util.List;
 public class ModEvents {
     private static final Logger LOGGER = LogManager.getLogger();
     private static String lastKnownBiome;
+
+    public static void sendDiscoveryMessage(String groupName) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player != null) {
+            MutableComponent message = Component.literal("Discovered new item group: ")
+                .withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))
+                .append(Component.literal(groupName).withStyle(
+                    Style.EMPTY
+                        .withColor(ChatFormatting.GOLD)
+                        .withBold(true)
+                ));
+            minecraft.player.displayClientMessage(message, false);
+        }
+    }
 
 
     @SubscribeEvent
@@ -67,11 +85,7 @@ public class ModEvents {
         }
         Advancement advancement = event.getAdvancement();
         if (advancement == null) return;
-
-        ResourceLocation id = advancement.getId();
-        if (id == null) return;
-
-        String advancementId = id.toString();
+        String advancementId = advancement.getId().toString();
         LOGGER.info("Advancement earned: {}", advancementId);
         checkTrigger(ItemGroup.TriggerType.ADVANCEMENT, advancementId);
     }
