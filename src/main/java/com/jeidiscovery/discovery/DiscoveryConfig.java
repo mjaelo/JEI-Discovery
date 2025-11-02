@@ -18,7 +18,7 @@ public class DiscoveryConfig {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path CONFIG_PATH = FMLPaths.CONFIGDIR.get().resolve("jei-discovery/jei-discovery.json");
-    public static final String DEFAULT_CONFIG_PATH = "/data/jeidiscovery/config/default_config.json";
+    public static final String DEFAULT_CONFIG_PATH = "/data/jeidiscovery/config/simple_config.json";
 
     private static DiscoveryConfig INSTANCE;
     private final Set<String> discoveredGroupNames = new HashSet<>();
@@ -62,6 +62,7 @@ public class DiscoveryConfig {
                             ItemGroup.TriggerType.valueOf(groupObj.get("triggerType").getAsString().toUpperCase()),
                             groupObj.get("triggerValue").getAsString(),
                             toStringList(groupObj.getAsJsonArray("keywords")),
+                            toStringList(groupObj.getAsJsonArray("blacklist")),
                             toStringList(groupObj.getAsJsonArray("namespaces"))
                         );
                         itemGroups.add(group);
@@ -111,6 +112,7 @@ public class DiscoveryConfig {
                         "triggerType", group.triggerType().name(),
                         "triggerValue", group.triggerValue(),
                         "keywords", group.keywords(),
+                        "blacklist", group.blacklist(),
                         "namespaces", group.namespaces()
                     ))
                     .collect(Collectors.toList())

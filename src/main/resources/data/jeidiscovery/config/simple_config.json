@@ -1,0 +1,59 @@
+{
+  "discovered_item_groups": [
+  ],
+  "item_groups": [
+    {
+      "triggerValue": "the_nether",
+      "name": "Nether",
+      "triggerType": "DIMENSION",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "nether",
+        "quartz",
+        "blaze",
+        "wither",
+        "ghast",
+        "quartz",
+        "crimson",
+        "weeping",
+        "twisting",
+        "glowstone",
+        "basalt",
+        "soul_",
+        "netherite",
+        "ancient_debris",
+        "shroomlight",
+        "blackstone",
+        "magma",
+        "warped"
+      ]
+    },
+    {
+      "triggerValue": "the_end",
+      "name": "End",
+      "triggerType": "DIMENSION",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "ender",
+        "chorus",
+        "shulker",
+        "end_",
+        "elytra",
+        "dragon",
+        "purpur"
+      ]
+    },
+    {
+      "triggerValue": "deep_dark",
+      "name": "Sculk",
+      "triggerType": "BIOME",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "sculk",
+        "warden",
+        "recovery_compass",
+        "echo"
+      ]
+    }
+  ]
+}

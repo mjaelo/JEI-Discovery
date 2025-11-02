@@ -61,7 +61,6 @@ public class ModEvents {
         }
         ItemStack itemStack = event.getItem().getItem();
         String itemId = itemStack.getItem().getDescriptionId().split("\\.")[2];
-        LOGGER.info("Item picked up: {}", itemId);
         checkTrigger(ItemGroup.TriggerType.ITEM, itemId);
     }
 

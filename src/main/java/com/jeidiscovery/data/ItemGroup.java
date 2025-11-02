@@ -7,6 +7,7 @@ public record ItemGroup(
     TriggerType triggerType,
     String triggerValue,
     List<String> keywords,
+    List<String> blacklist,
     List<String> namespaces
 ) {
     public enum TriggerType {

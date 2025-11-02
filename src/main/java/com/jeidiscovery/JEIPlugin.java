@@ -52,6 +52,14 @@ public class JEIPlugin implements IModPlugin {
     public static void showItems(List<ItemStack> items) {
         handleItems(items, true);
     }
+    
+    /**
+     * Gets the JEI runtime instance
+     * @return The JEI runtime, or null if not available
+     */
+    public static IJeiRuntime getJeiRuntime() {
+        return jeiRuntime;
+    }
 
     /**
      * Handles showing/hiding items in JEI. Thread-safe - will execute on the main client thread if needed.

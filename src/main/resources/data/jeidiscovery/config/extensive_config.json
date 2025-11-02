@@ -1,0 +1,291 @@
+{
+  "discovered_item_groups": [
+  ],
+  "item_groups": [
+    {
+      "triggerValue": "_hoe",
+      "name": "Nature",
+      "triggerType": "ITEM",
+      "namespaces": [],      "blacklist": [],
+      "keywords": [
+        "alium",
+        "poppy",
+        "flower",
+        "leav",
+        "roots",
+        "seeds",
+        "berri",
+        "plant",
+        "kelp",
+        "coral",
+        "fern",
+        "lichen",
+        "grass",
+        "beans",
+        "bush",
+        "tulip",
+        "moss",
+        "lily",
+        "leaf",
+        "lilac",
+        "peony",
+        "dandelion",
+        "cactus",
+        "daisy",
+        "allium",
+        "vine",
+        "azalea",
+        "azure_bluet"
+      ]
+    },
+    {
+      "triggerValue": "_log",
+      "name": "Woodworks",
+      "triggerType": "ITEM",
+      "namespaces": [],     "blacklist": [],
+      "keywords": [
+        "oak_",
+        "birch",
+        "jungle_",
+        "acacia",
+        "mangrove",
+        "spruce",
+        "cherry_",
+        "bamboo"
+      ]
+    },
+    {
+      "triggerValue": "cobble",
+      "name": "Stoneworks",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "stone",
+        "slate",
+        "prismarine",
+        "bricks",
+        "granite",
+        "diorite",
+        "andesite",
+        "terracotta",
+        "brick",
+        "concrete",
+        "obsidian",
+        "rock",
+        "calcite",
+        "tuff"
+      ]
+    },
+    {
+      "triggerValue": "iron_ingot",
+      "name": "Iron Age",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "anvil",
+        "bucket",
+        "shears",
+        "hopper",
+        "rail",
+        "minecart",
+        "clock",
+        "compass",
+        "lantern",
+        "cauldron",
+        "steel",
+        "tripwire",
+        "shield",
+        "chain"
+      ]
+    },
+    {
+      "triggerValue": "crafting_table",
+      "name": "Crafting",
+      "triggerType": "ITEM",
+      "namespaces": [],      "blacklist":["crafting_table"],
+      "keywords": [
+        "boat",
+        "door",
+        "pressure_plate",
+        "fence",
+        "trapdoor",
+        "ladder",
+        "scaffolding",
+        "chest",
+        "barrel",
+        "armor_stand",
+        "item_frame",
+        "painting",
+        "book",
+        "lectern",
+        "dropper",
+        "dispenser",
+        "piston",
+        "observer",
+        "brush",
+        "smoker",
+        "table",
+        "loom",
+        "furnace",
+        "composter",
+        "box",
+        "note_block",
+        "detector",
+        "tnt",
+        "spyglass",
+        "comparator",
+        "repeater"
+      ]
+    },
+    {
+      "triggerValue": "jukebox",
+      "name": "Music",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "music_disc"
+      ]
+    },
+    {
+      "triggerValue": "smithing_table",
+      "name": "Smithing",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "smithing_template"
+      ]
+    },
+    {
+      "triggerValue": "spawn",
+      "name": "Spawning",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "spawn"
+      ]
+    },
+    {
+      "triggerValue": "potion",
+      "name": "Potions",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "potion"
+      ]
+    },
+    {
+      "triggerValue": "arrow",
+      "name": "Arrows",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "arrow"
+      ]
+    },
+    {
+      "triggerValue": "enchanted_book",
+      "name": "Enchanting",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "enchant",
+        "ancient_tome"
+      ]
+    },
+    {
+      "triggerValue": "dye",
+      "name": "Dyeing",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "_dye",
+        "stained_glass",
+        "white_candle",
+        "gray_candle",
+        "black_candle",
+        "brown_",
+        "red_",
+        "orange_",
+        "yellow_",
+        "lime_",
+        "green_",
+        "cyan_",
+        "blue_",
+        "purple_",
+        "magenta_",
+        "pink_"
+      ]
+    },
+    {
+      "triggerValue": "raw_",
+      "name": "Mining",
+      "triggerType": "ITEM",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "ore",
+        "ingot",
+        "iron",
+        "copper",
+        "diamond",
+        "gold",
+        "emerald",
+        "redstone",
+        "lapis",
+        "amethyst"
+      ]
+    },
+    {
+      "triggerValue": "the_nether",
+      "name": "Nether",
+      "triggerType": "DIMENSION",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "nether",
+        "quartz",
+        "blaze",
+        "wither",
+        "ghast",
+        "quartz",
+        "crimson",
+        "weeping",
+        "twisting",
+        "glowstone",
+        "basalt",
+        "soul_",
+        "netherite",
+        "ancient_debris",
+        "shroomlight",
+        "blackstone",
+        "magma",
+        "warped"
+      ]
+    },
+    {
+      "triggerValue": "the_end",
+      "name": "End",
+      "triggerType": "DIMENSION",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "ender",
+        "chorus",
+        "shulker",
+        "end_",
+        "elytra",
+        "dragon",
+        "purpur"
+      ]
+    },
+    {
+      "triggerValue": "deep_dark",
+      "name": "Sculk",
+      "triggerType": "BIOME",
+      "namespaces": [],"blacklist": [],
+      "keywords": [
+        "sculk",
+        "warden",
+        "recovery_compass",
+        "echo"
+      ]
+    }
+  ]
+}

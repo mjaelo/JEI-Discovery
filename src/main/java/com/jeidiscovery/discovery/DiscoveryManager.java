@@ -3,12 +3,12 @@ package com.jeidiscovery.discovery;
 import com.jeidiscovery.JEIPlugin;
 import com.jeidiscovery.ModEvents;
 import com.jeidiscovery.data.ItemGroup;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.runtime.IIngredientManager;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,37 +40,27 @@ public class DiscoveryManager {
 
     private void indexItemsByGroup() {
         itemsByGroup.clear();
+        IJeiRuntime jeiRuntime = JEIPlugin.getJeiRuntime();
+        if (jeiRuntime == null) return;
 
-        // Get all registered items
-        Collection<Item> allItems = ForgeRegistries.ITEMS.getValues();
+        IIngredientManager ingredientManager = jeiRuntime.getIngredientManager();
+        List<ItemStack> allItemStacks = ingredientManager.getAllIngredients(VanillaTypes.ITEM_STACK).stream().toList();
 
-        // For each item, check which groups it belongs to
-        for (Item item : allItems) {
-            ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(item);
-            if (itemId == null) continue;
-
-            ItemStack stack = new ItemStack(item);
-
-            // Check each group to see if this item matches
+        for (ItemStack stack : allItemStacks) {
+            if (stack.isEmpty()) continue;
+            String itemId = stack.getDescriptionId();
             for (ItemGroup group : config.getItemGroups()) {
                 if (isItemFromGroup(group, itemId)) {
-                    itemsByGroup.computeIfAbsent(group.groupName(), k -> new ArrayList<>()).add(stack);
+                    itemsByGroup.computeIfAbsent(group.groupName(), k -> new ArrayList<>()).add(stack.copy());
                 }
             }
         }
-
         LOGGER.info("Indexed items for {} groups", itemsByGroup.size());
     }
 
-    public boolean isItemFromGroup(ItemGroup group, ResourceLocation itemId) {
-        // Check if item's namespace matches any in the group
-        if (group.namespaces().stream().anyMatch(ns -> itemId.getNamespace().equals(ns))) {
-            return true;
-        }
-
-        // Check if item's path contains any of the keywords
-        String path = itemId.getPath().toLowerCase();
-        return group.keywords().stream().anyMatch(path::contains);
+    public boolean isItemFromGroup(ItemGroup group, String itemId) {
+        if (!group.namespaces().isEmpty() && group.namespaces().stream().noneMatch(itemId::contains)) return false;
+        return  group.blacklist().stream().noneMatch(itemId::contains) && group.keywords().stream().anyMatch(itemId::contains);
     }
 
     public boolean isItemGroupDiscovered(String groupName) {
@@ -79,7 +69,7 @@ public class DiscoveryManager {
 
     public List<ItemGroup> getItemGroupsByTrigger(ItemGroup.TriggerType type, String value) {
         return config.getItemGroups().stream()
-                .filter(group -> group.triggerType() == type && group.triggerValue().equals(value))
+                .filter(group -> group.triggerType() == type && value.contains(group.triggerValue()))
                 .collect(Collectors.toList());
     }
 
@@ -87,7 +77,12 @@ public class DiscoveryManager {
         if (config.getDiscoveredGroupNames().add(groupName)) {
             LOGGER.info("Discovered new item group: {}", groupName);
             config.saveConfig();
-            JEIPlugin.showItems(getItemsForGroup(groupName));
+            List<ItemStack> itemsForGroup = getItemsForGroup(groupName).stream()
+                    .filter(discovered->
+                            getItemsToHide().stream()
+                                    .noneMatch(stack-> stack.getItem().getDescriptionId().equals(discovered.getItem().getDescriptionId()))
+                    ).toList();
+            JEIPlugin.showItems(itemsForGroup);
             ModEvents.sendDiscoveryMessage(groupName);
         }
     }
