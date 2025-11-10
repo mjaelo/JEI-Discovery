@@ -1,11 +1,15 @@
 package com.jeidiscovery.discovery;
 
 import com.jeidiscovery.JEIPlugin;
-import com.jeidiscovery.ModEvents;
 import com.jeidiscovery.data.ItemGroup;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.runtime.IIngredientManager;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -83,20 +87,35 @@ public class DiscoveryManager {
                                     .noneMatch(stack-> stack.getItem().getDescriptionId().equals(discovered.getItem().getDescriptionId()))
                     ).toList();
             JEIPlugin.showItems(itemsForGroup);
-            ModEvents.sendDiscoveryMessage(groupName);
+            sendDiscoveryMessage(groupName);
         }
     }
 
     public List<ItemStack> getItemsToHide() {
+        if (itemsByGroup.isEmpty()) {
+            indexItemsByGroup();
+        }
         DiscoveryConfig config = DiscoveryConfig.getInstance();
-        DiscoveryManager manager = DiscoveryManager.getInstance();
-
         List<ItemStack> itemsToHide = new ArrayList<>();
         for (ItemGroup group : config.getItemGroups()) {
-            if (!manager.isItemGroupDiscovered(group.groupName())) {
-                itemsToHide.addAll(manager.getItemsForGroup(group.groupName()));
+            if (!isItemGroupDiscovered(group.groupName())) {
+                itemsToHide.addAll(getItemsForGroup(group.groupName()));
             }
         }
         return itemsToHide;
+    }
+
+    private void sendDiscoveryMessage(String groupName) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player != null) {
+            MutableComponent message = Component.literal("Discovered new item group: ")
+                    .withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))
+                    .append(Component.literal(groupName).withStyle(
+                            Style.EMPTY
+                                    .withColor(ChatFormatting.GOLD)
+                                    .withBold(true)
+                    ));
+            minecraft.player.displayClientMessage(message, false);
+        }
     }
 }

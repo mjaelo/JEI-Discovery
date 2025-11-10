@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static net.minecraftforge.versions.forge.ForgeVersion.MOD_ID;
+
 public class DiscoveryConfig {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -43,14 +45,14 @@ public class DiscoveryConfig {
 
             String json = Files.readString(CONFIG_PATH);
             var jsonObject = JsonParser.parseString(json).getAsJsonObject();
-            
+
             // Load discovered item groups
             if (jsonObject.has("discovered_item_groups")) {
                 discoveredGroupNames.clear();
                 jsonObject.getAsJsonArray("discovered_item_groups")
-                    .forEach(element -> discoveredGroupNames.add(element.getAsString()));
+                        .forEach(element -> discoveredGroupNames.add(element.getAsString()));
             }
-            
+
             // Load item groups
             if (jsonObject.has("item_groups")) {
                 itemGroups.clear();
@@ -58,12 +60,12 @@ public class DiscoveryConfig {
                     try {
                         var groupObj = element.getAsJsonObject();
                         var group = new ItemGroup(
-                            groupObj.get("name").getAsString(),
-                            ItemGroup.TriggerType.valueOf(groupObj.get("triggerType").getAsString().toUpperCase()),
-                            groupObj.get("triggerValue").getAsString(),
-                            toStringList(groupObj.getAsJsonArray("keywords")),
-                            toStringList(groupObj.getAsJsonArray("blacklist")),
-                            toStringList(groupObj.getAsJsonArray("namespaces"))
+                                groupObj.get("name").getAsString(),
+                                ItemGroup.TriggerType.valueOf(groupObj.get("triggerType").getAsString().toUpperCase()),
+                                groupObj.get("triggerValue").getAsString(),
+                                toStringList(groupObj.getAsJsonArray("keywords")),
+                                toStringList(groupObj.getAsJsonArray("blacklist")),
+                                toStringList(groupObj.getAsJsonArray("namespaces"))
                         );
                         itemGroups.add(group);
                     } catch (Exception e) {
@@ -71,10 +73,10 @@ public class DiscoveryConfig {
                     }
                 }
             }
-            
+
             LOGGER.info("Loaded {} item groups and {} discovered groups", itemGroups.size(), discoveredGroupNames.size());
         } catch (Exception e) {
-            LOGGER.error("Failed to load config", e);
+            LOGGER.error(MOD_ID + "Failed to load config", e);
             createConfig();
         }
     }
@@ -101,23 +103,23 @@ public class DiscoveryConfig {
             LOGGER.error("Failed to create default config", e);
         }
     }
-    
+
     public void saveConfig() {
         try {
             var config = Map.of(
-                "discovered_item_groups", new ArrayList<>(discoveredGroupNames),
-                "item_groups", itemGroups.stream()
-                    .map(group -> Map.of(
-                        "name", group.groupName(),
-                        "triggerType", group.triggerType().name(),
-                        "triggerValue", group.triggerValue(),
-                        "keywords", group.keywords(),
-                        "blacklist", group.blacklist(),
-                        "namespaces", group.namespaces()
-                    ))
-                    .collect(Collectors.toList())
+                    "discovered_item_groups", new ArrayList<>(discoveredGroupNames),
+                    "item_groups", itemGroups.stream()
+                            .map(group -> Map.of(
+                                    "name", group.groupName(),
+                                    "triggerType", group.triggerType().name(),
+                                    "triggerValue", group.triggerValue(),
+                                    "keywords", group.keywords(),
+                                    "blacklist", group.blacklist(),
+                                    "namespaces", group.namespaces()
+                            ))
+                            .collect(Collectors.toList())
             );
-            
+
             Files.writeString(CONFIG_PATH, GSON.toJson(config));
         } catch (Exception e) {
             LOGGER.error("Failed to save config", e);

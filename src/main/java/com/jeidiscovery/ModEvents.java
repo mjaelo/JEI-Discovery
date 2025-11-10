@@ -2,16 +2,12 @@ package com.jeidiscovery;
 
 import com.jeidiscovery.data.ItemGroup;
 import com.jeidiscovery.discovery.DiscoveryManager;
-import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
@@ -25,26 +21,16 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = JEIDiscovery.MODID, value = Dist.CLIENT)
 public class ModEvents {
     private static final Logger LOGGER = LogManager.getLogger();
     private static String lastKnownBiome;
-
-    public static void sendDiscoveryMessage(String groupName) {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player != null) {
-            MutableComponent message = Component.literal("Discovered new item group: ")
-                .withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))
-                .append(Component.literal(groupName).withStyle(
-                    Style.EMPTY
-                        .withColor(ChatFormatting.GOLD)
-                        .withBold(true)
-                ));
-            minecraft.player.displayClientMessage(message, false);
-        }
-    }
+    private static Set<Item> lastInventory = new HashSet<>();
 
 
     @SubscribeEvent
@@ -109,12 +95,27 @@ public class ModEvents {
             if (player.level().isClientSide()) {
                 return; // Only run on the server side
             }
-            String currentBiome = player.level().getBiome(player.blockPosition()).unwrapKey().get().location().getPath();
-            if (!currentBiome.equals(lastKnownBiome)) {
-                System.out.println(player.getName().getString() + " has entered the " + currentBiome + " biome.");
-                checkTrigger(ItemGroup.TriggerType.BIOME, currentBiome);
-                lastKnownBiome = currentBiome;
-            }
+            onBiomeChange(player);
+            onInventoryChange(player);
+        }
+    }
+
+    private static void onInventoryChange(Player player) {
+        Set<Item> currentInventory = player.getInventory().items.stream().map(ItemStack::getItem).collect(Collectors.toSet());
+        if (!currentInventory.equals(lastInventory)) {
+            List<String> newItems = currentInventory.stream()
+                    .filter(item -> !lastInventory.contains(item))
+                    .map(item -> item.getDescriptionId().split("\\.")[2]).toList();
+            newItems.forEach(itemId -> checkTrigger(ItemGroup.TriggerType.ITEM, itemId));
+            lastInventory = currentInventory;
+        }
+    }
+
+    private static void onBiomeChange(Player player) {
+        String currentBiome = player.level().getBiome(player.blockPosition()).unwrapKey().get().location().getPath();
+        if (!currentBiome.equals(lastKnownBiome)) {
+            checkTrigger(ItemGroup.TriggerType.BIOME, currentBiome);
+            lastKnownBiome = currentBiome;
         }
     }
 
