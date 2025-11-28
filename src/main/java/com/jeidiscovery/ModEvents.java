@@ -1,8 +1,13 @@
 package com.jeidiscovery;
 
 import com.jeidiscovery.data.ItemGroup;
+import com.jeidiscovery.discovery.DiscoveryConfig;
 import com.jeidiscovery.discovery.DiscoveryManager;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
@@ -26,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mod.EventBusSubscriber(modid = JEIDiscovery.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = JEIDiscoveryMod.MODID, value = Dist.CLIENT)
 public class ModEvents {
     private static final Logger LOGGER = LogManager.getLogger();
     private static String lastKnownBiome;
@@ -98,6 +104,54 @@ public class ModEvents {
             onBiomeChange(player);
             onInventoryChange(player);
         }
+    }
+
+    @SubscribeEvent
+    public static void registerCommands(RegisterCommandsEvent event) {
+        var command = Commands.literal("jeidiscovery")
+                .then(Commands.literal("discover")
+                        .then(Commands.literal("all")
+                                .executes(context -> {
+                                    DiscoveryConfig.getAllGroupNames().forEach(group ->  DiscoveryManager.getInstance().discoverItemGroup(group));
+                                    context.getSource().sendSuccess(() -> Component.literal("§aDiscovered all JEI groups"), true);
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
+                        .then(Commands.argument("group", StringArgumentType.string())
+                                .suggests((context, builder) -> {
+                                    DiscoveryConfig.getAllGroupNames().forEach(builder::suggest);
+                                    return builder.buildFuture();
+                                })
+                                .executes(context -> {
+                                    String group = StringArgumentType.getString(context, "group");
+                                    DiscoveryManager.getInstance().discoverItemGroup(group);
+                                    context.getSource().sendSuccess(() -> Component.literal("§aDiscovered JEI group: §e" + group), true);
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
+                )
+                .then(Commands.literal("hide")
+                        .then(Commands.literal("all")
+                                .executes(context -> {
+                                    DiscoveryConfig.getAllGroupNames().forEach(group ->  DiscoveryManager.getInstance().hideItemGroup(group));
+                                    context.getSource().sendSuccess(() -> Component.literal("§aHidden all JEI groups"), true);
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
+                        .then(Commands.argument("group", StringArgumentType.string())
+                                .suggests((context, builder) -> {
+                                    DiscoveryConfig.getInstance().getDiscoveredGroupNames().forEach(builder::suggest);
+                                    return builder.buildFuture();
+                                })
+                                .executes(context -> {
+                                    String group = StringArgumentType.getString(context, "group");
+                                    DiscoveryManager.getInstance().hideItemGroup(group);
+                                    context.getSource().sendSuccess(() -> Component.literal("§aHidden JEI group: §e" + group), true);
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
+                );
+        event.getDispatcher().register(command);
     }
 
     private static void onInventoryChange(Player player) {

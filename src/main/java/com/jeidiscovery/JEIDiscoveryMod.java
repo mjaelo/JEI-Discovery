@@ -7,12 +7,12 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(JEIDiscovery.MODID)
-public class JEIDiscovery {
+@Mod(JEIDiscoveryMod.MODID)
+public class JEIDiscoveryMod {
     public static final String MODID = "jeidiscovery";
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public JEIDiscovery() {
+    public JEIDiscoveryMod() {
         LOGGER.info("JEIDiscovery mod constructor");
 
         // Register the ModEvents class to handle all events

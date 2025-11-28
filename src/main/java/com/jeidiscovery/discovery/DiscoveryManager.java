@@ -91,6 +91,19 @@ public class DiscoveryManager {
         }
     }
 
+    public void hideItemGroup(String groupName) {
+        if (config.getDiscoveredGroupNames().remove(groupName)) {
+            LOGGER.info("Hidden item group: {}", groupName);
+            config.saveConfig();
+            List<ItemStack> itemsForGroup = getItemsForGroup(groupName).stream()
+                    .filter(discovered->
+                            getItemsToHide().stream()
+                                    .noneMatch(stack-> stack.getItem().getDescriptionId().equals(discovered.getItem().getDescriptionId()))
+                    ).toList();
+            JEIPlugin.hideItems(itemsForGroup);
+        }
+    }
+
     public List<ItemStack> getItemsToHide() {
         if (itemsByGroup.isEmpty()) {
             indexItemsByGroup();

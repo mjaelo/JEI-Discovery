@@ -133,4 +133,10 @@ public class DiscoveryConfig {
     public Set<String> getDiscoveredGroupNames() {
         return discoveredGroupNames;
     }
+
+    public static List<String> getAllGroupNames() {
+        return getInstance().itemGroups.stream()
+                .map(ItemGroup::groupName)
+                .toList();
+    }
 }
